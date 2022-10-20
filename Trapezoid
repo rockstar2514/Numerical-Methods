@@ -1,0 +1,40 @@
+function[r] = fn(y)
+r = (y/4)*(1 - ( y/20));
+end
+
+function[fp] = fp_iter(y, h, M)
+fp = y;
+for i=1:M
+    fp = y + (h/2)*(fn(y)+fn(fp));
+end
+end
+
+
+function [ E1,E2 ] = labexam1(J,M)
+E1 = zeros(1,J);
+E2 = zeros(1,J);
+val = 20/(1 + 19 * exp(-1/4));
+for j = 1:J                 % iterate of various computational grids
+    N = 2^(j+3);            % respective grid sizes
+    h = 1/N;                % grid spacing
+    
+    %% COMPLETE REST OF THE FUNCTION AS PER THE REQUIRMENTS GIVEN IN THE
+    %% PROBLEM STATEMENT
+    yE = 1;
+    yTrap = 1;
+    for i = 1:N
+        yE = yE + h*fn(yE);
+    end
+    for i = 1:N
+        yTrap = fp_iter(yTrap, h, M);
+    end
+    E1(j) = abs(yE - val);
+    E2(j) = abs(yTrap - val);
+end
+
+end
+
+%test code
+%[err1, err2] = labexam1(10, 10)
+%err1
+%err2

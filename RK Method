@@ -1,0 +1,43 @@
+% the function f where ode is y' = f(y)
+function [der] = f(t, y)
+    der = zeros(3,1);
+    der(1,1) = y(2,1);
+    der(2,1) = y(3,1);
+    der(3,1) = -((2*t)/(1+(t*t)))*y(3,1);
+end
+%method to implement rk4
+function [val] = rungekutta(y, t, h)
+    k1 = h*f(t,y);
+    k2 = h*f(t+(h/2), y + (k1/2));
+    k3 = h*f(t+(h/2), y + (k2/2));
+    k4 = h*f(t+h, y+k3);
+    val = y + (k1/6) + (k2/3) + (k3/3) + (k4/6);
+end
+%adam bashford method
+function [val] = ab4(y1,y2,y3,y4,t,h)
+    val = y1+((h/24)*((55*f(t, y1) - 59*f(t-h,y2) + 37*f(t-(2*h), y3) - 9*f(t -(3*h),y4))));
+end
+
+function u = labexam2(T,N)
+    h = T/N;
+    u = zeros(1,N+1); % for storing and returning the numerical solution
+
+    y = zeros(3,N+1);
+    y(1,1) = 1;
+    y(2,1) = 0;
+    y(3,1) = 1;
+    for i = 2:4
+        y(:, i) = rungekutta(y(:,i-1), (i-2)*h, h); 
+    end
+    
+    for i=5:N+1
+        y(:, i) = ab4(y(:, i-1), y(:, i-2), y(:, i-3), y(:, i-4), (i-2)*h, h);
+    end
+    u = y(1,:);
+    %% COMPLETE REST OF THE FUNCTION AS PER THE REQUIRMENTS GIVEN IN THE
+    %% PROBLEM STATEMENT
+
+end
+
+
+%labexam2(40,5000) %value via our procedure is is 59.1429, actual value 59.143(desmos)
